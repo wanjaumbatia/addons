@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_afyaplug_patient" model="ir.sequence">
+            <field name="name">Patient Sequence</field>
+            <field name="code">afyaplug.patient</field>
+            <field name="prefix">APP/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <record id="seq_afyaplug_nurse" model="ir.sequence">
+            <field name="name">Nurse Sequence</field>
+            <field name="code">afyaplug.nurse</field>
+            <field name="prefix">APN/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,288 @@
+<odoo>
+    <data>
+        <form string="Employee" js_class="hr_employee_form" class="o_employee_form">
+            <field name="active" modifiers="{&quot;invisible&quot;: true}"/>
+            <field name="user_id" on_change="1" modifiers="{&quot;invisible&quot;: true}" can_create="true"
+                   can_write="true"/>
+            <field name="user_partner_id" on_change="1"
+                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <field name="hr_presence_state" on_change="1"
+                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <field name="hr_icon_display" modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <field name="image_128" on_change="1"
+                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <field name="company_id" on_change="1" modifiers="{&quot;invisible&quot;: true, &quot;required&quot;: true}"
+                   can_create="true" can_write="true"/>
+            <field name="last_activity_time" modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <field name="last_activity" modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+            <header>
+                <button name="326" string="Launch Plan" type="action"/>
+            </header>
+            <sheet>
+                <div name="button_box" class="oe_button_box">
+                    <field name="related_contacts_count"
+                           modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                    <button name="action_related_contacts" class="oe_stat_button" icon="fa-address-card-o" type="object"
+                            modifiers="{&quot;invisible&quot;: [[&quot;related_contacts_count&quot;, &quot;=&quot;, 0]]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="related_contacts_count" modifiers="{&quot;readonly&quot;: true}"/>
+                            </span>
+                            <span class="o_stat_text">Contacts</span>
+                        </div>
+                    </button>
+                </div>
+                <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        modifiers="{&quot;invisible&quot;: [[&quot;active&quot;, &quot;=&quot;, true]]}"/>
+                <field name="avatar_128" modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                <div class="o_employee_avatar">
+                    <field name="image_1920" widget="image" class="oe_avatar m-0"
+                           options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;avatar_128&quot;}"
+                           on_change="1"/>
+                    <div id="hr_presence_status" class="d-flex align-items-end fs-6 o_employee_availability">
+                        <!-- Employee is present/connected and it is normal according to his work schedule  -->
+                        <small role="img" class="fa fa-fw fa-circle text-success o_button_icon hr_presence align-middle"
+                               aria-label="Present" title="Present"
+                               modifiers="{&quot;invisible&quot;: [[&quot;hr_icon_display&quot;, &quot;!=&quot;, &quot;presence_present&quot;]]}"/>
+                        <!-- Employee is not present and it is normal according to his work schedule -->
+                        <small role="img" class="fa fa-fw fa-circle-o text-muted o_button_icon hr_presence align-middle"
+                               aria-label="Absent" title="Absent" name="presence_absent"
+                               modifiers="{&quot;invisible&quot;: [[&quot;hr_icon_display&quot;, &quot;!=&quot;, &quot;presence_absent&quot;]]}"/>
+                        <!-- Employee is connected but according to his work schedule, he should not work for now  -->
+                        <small role="img"
+                               class="fa fa-fw fa-circle-o text-success o_button_icon hr_presence align-middle"
+                               aria-label="Present but not active" title="Present but not active"
+                               name="presence_absent_active"
+                               modifiers="{&quot;invisible&quot;: [[&quot;hr_icon_display&quot;, &quot;!=&quot;, &quot;presence_absent_active&quot;]]}"/>
+                        <!-- Employee is not here but according to his work schedule, he should be connected -->
+                        <small role="img" class="fa fa-fw fa-circle text-warning o_button_icon hr_presence align-middle"
+                               aria-label="To define" title="To define" name="presence_to_define"
+                               modifiers="{&quot;invisible&quot;: [[&quot;hr_icon_display&quot;, &quot;!=&quot;, &quot;presence_to_define&quot;]]}"/>
+                    </div>
+                </div>
+                <div class="oe_title">
+                    <h1 class="d-flex flex-row">
+                        <span class="me-2">
+                            <widget name="hr_employee_chat"/>
+                        </span>
+                        <field name="name" placeholder="Employee's Name" style="font-size: min(4vw, 2.6rem);"
+                               on_change="1" modifiers="{&quot;required&quot;: true}"/>
+                    </h1>
+                    <h2>
+                        <field name="job_title" placeholder="Job Position"/>
+                    </h2>
+                    <field name="category_ids" widget="many2many_tags"
+                           options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags"
+                           can_create="true" can_write="true"/>
+                </div>
+                <group>
+                    <group>
+                        <field name="mobile_phone" widget="phone"/>
+                        <field name="work_phone" widget="phone"/>
+                        <field name="work_email" widget="email"/>
+                        <field name="is_nurse"/>
+                        <field name="company_country_id" on_change="1"
+                               modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                        <field name="company_country_code"
+                               modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                    </group>
+                    <group>
+                        <field name="department_id" on_change="1" can_create="true" can_write="true"/>
+                        <field name="parent_id" on_change="1" can_create="true" can_write="true"/>
+                        <field name="coach_id" can_create="true" can_write="true"/>
+                        <field name="nurse_id" modifiers="{&quot;readonly&quot;: true, &quot;required&quot;: true}"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page name="public" string="Work Information">
+                        <div id="o_work_employee_container"
+                             class="d-lg-flex"> <!-- These two div are used to position org_chart -->
+                            <div id="o_work_employee_main" class="flex-grow-1">
+                                <group string="Location">
+                                    <field name="address_id" context="{'show_address': 1}"
+                                           options="{&quot;always_reload&quot;: True, &quot;highlight_first_line&quot;: True}"
+                                           on_change="1" can_create="true" can_write="true"/>
+                                    <field name="work_location_id" context="{'default_address_id': address_id}"
+                                           can_create="true" can_write="true"/>
+                                </group>
+                                <group name="managers" string="Approvers" class="hide-group-if-empty"
+                                       modifiers="{&quot;invisible&quot;: true}">
+                                    <!-- is overridden in other hr related modules -->
+                                </group>
+                                <group name="departure" string="Departure"
+                                       modifiers="{&quot;invisible&quot;: [[&quot;active&quot;, &quot;=&quot;, true]]}">
+                                    <field name="departure_reason_id"
+                                           options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                                           can_create="true" can_write="true"/>
+                                    <field name="departure_description"/>
+                                    <field name="departure_date"/>
+                                </group>
+                                <group string="Schedule">
+                                    <field name="resource_calendar_id" on_change="1"
+                                           modifiers="{&quot;required&quot;: true}" can_create="true" can_write="true"/>
+                                    <field name="id"
+                                           modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                                    <field name="tz"
+                                           modifiers="{&quot;required&quot;: [[&quot;id&quot;, &quot;!=&quot;, false]]}"/>
+                                </group>
+                            </div>
+                            <div id="o_employee_right" class="col-lg-4 px-0 ps-lg-5 pe-lg-0">
+                                <separator string="Organization Chart"/>
+                                <field name="child_ids" class="position-relative" widget="hr_org_chart" nolabel="1"
+                                       modifiers="{&quot;readonly&quot;: true}"/>
+                            </div>
+                        </div>
+                    </page>
+                    <page string="Received Badges" name="received_badges"
+                          modifiers="{&quot;invisible&quot;: [[&quot;user_id&quot;, &quot;=&quot;, false]]}">
+                        <field name="has_badges" modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                        <button string="Grant a Badge" type="action" name="352"/>
+                        to reward this employee for a good action
+                        <div class="o_field_nocontent"
+                             modifiers="{&quot;invisible&quot;: [[&quot;has_badges&quot;, &quot;=&quot;, true]]}">
+                            <p>
+                                Grant this employee his first badge
+                            </p>
+                            <p class="oe_grey">
+                                Badges are rewards of good work. Give them to people you believe deserve it.
+                            </p>
+                        </div>
+                        <field name="badge_ids" mode="kanban" modifiers="{&quot;readonly&quot;: true}">
+                            <kanban class="oe_background_grey" action="action_open_badge" type="object">
+                                <field name="badge_name"/>
+                                <field name="badge_id" on_change="1" modifiers="{&quot;required&quot;: true}"/>
+                                <field name="user_id" modifiers="{&quot;required&quot;: true}"/>
+                                <field name="comment"/>
+                                <field name="create_date" modifiers="{&quot;readonly&quot;: true}"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div class="oe_kanban_card oe_kanban_global_click oe_kanban_badge oe_kanban_color_white o_kanban_gamification">
+                                            <div class="o_kanban_content">
+                                                <div class="o_kanban_image">
+                                                    <a type="open">
+                                                        <img t-att-src="kanban_image('gamification.badge', 'image_1024', record.badge_id.raw_value)"
+                                                             t-att-title="record.badge_name.value"
+                                                             t-att-alt="record.badge_name.value"/>
+                                                    </a>
+                                                </div>
+                                                <div class="oe_kanban_details">
+                                                    <h4 class="mt0 mb0">
+                                                        <a class="o_kanban_record_title" type="open">
+                                                            <t t-esc="record.badge_name.raw_value"/>
+                                                        </a>
+                                                    </h4>
+                                                    <t t-if="record.comment.raw_value">
+                                                        <p class="o_kanban_record_subtitle">
+                                                            <em>
+                                                                <field name="comment"/>
+                                                            </em>
+                                                        </p>
+                                                    </t>
+                                                    <p>Granted by
+                                                        <a type="open">
+                                                            <field name="create_uid"
+                                                                   modifiers="{&quot;readonly&quot;: true}"/>
+                                                        </a>
+                                                        the
+                                                        <t t-esc="luxon.DateTime.fromISO(record.create_date.raw_value).toFormat('D')"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                        </field>
+                    </page>
+                    <page name="personal_information" string="Private Information">
+                        <group>
+                            <group string="Private Contact">
+                                <field name="address_home_id"
+                                       context="{                                                 'show_address': 1,                                                 'default_type': 'private',                                                 'form_view_ref': 'base.res_partner_view_form_private'}"
+                                       options="{&quot;always_reload&quot;: True, &quot;highlight_first_line&quot;: True}"
+                                       on_change="1" can_create="true" can_write="true"/>
+                                <field name="private_email" string="Email" modifiers="{&quot;readonly&quot;: true}"/>
+                                <field name="phone" class="o_force_ltr" string="Phone"
+                                       modifiers="{&quot;readonly&quot;: true}"/>
+                                <field name="bank_account_id" context="{'default_partner_id': address_home_id}"
+                                       can_create="true" can_write="true"/>
+                                <field name="lang" string="Language"/>
+                                <label for="km_home_work"/>
+                                <div class="o_row" name="div_km_home_work">
+                                    <field name="km_home_work" class="o_hr_narrow_field"/>
+                                    <span>Km</span>
+                                </div>
+                            </group>
+                            <group string="Family Status">
+                                <field name="marital"/>
+                                <field name="spouse_complete_name"
+                                       modifiers="{&quot;invisible&quot;: [[&quot;marital&quot;, &quot;not in&quot;, [&quot;married&quot;, &quot;cohabitant&quot;]]]}"/>
+                                <field name="spouse_birthdate"
+                                       modifiers="{&quot;invisible&quot;: [[&quot;marital&quot;, &quot;not in&quot;, [&quot;married&quot;, &quot;cohabitant&quot;]]]}"/>
+                                <field name="children"/>
+                                <separator name="emergency" string="Emergency"/>
+                                <field name="emergency_contact"/>
+                                <field name="emergency_phone" class="o_force_ltr"/>
+                            </group>
+                            <group string="Education">
+                                <field name="certificate"/>
+                                <field name="study_field"/>
+                                <field name="study_school"/>
+                                <separator name="has_work_permit" string="Work Permit"/>
+                                <field name="visa_no"/>
+                                <field name="permit_no"/>
+                                <field name="visa_expire"/>
+                                <field name="work_permit_expiration_date"/>
+                                <field name="has_work_permit" widget="work_permit_upload"/>
+                            </group>
+                            <group string="Citizenship">
+                                <field name="country_id"
+                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                       can_create="true" can_write="true"/>
+                                <field name="identification_id"/>
+                                <field name="passport_id"/>
+                                <field name="gender"/>
+                                <field name="birthday"/>
+                                <field name="place_of_birth"/>
+                                <field name="country_of_birth" can_create="true" can_write="true"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="hr_settings" string="HR Settings">
+                        <group>
+                            <group string="Status" name="active_group">
+                                <field name="employee_type" modifiers="{&quot;required&quot;: true}"/>
+                                <field name="user_id" string="Related User" domain="[('share', '=', False)]"
+                                       context="{'allow_create_employee': False, 'default_create_employee': False}"
+                                       on_change="1" can_create="true" can_write="true"/>
+                            </group>
+                            <group string="Attendance/Point of Sale" name="identification_group">
+                                <field name="pin" string="PIN Code"/>
+                                <label for="barcode"/>
+                                <div class="o_row">
+                                    <field name="barcode"/>
+                                    <button string="Generate" class="btn btn-link" type="object"
+                                            name="generate_random_barcode"
+                                            modifiers="{&quot;invisible&quot;: [[&quot;barcode&quot;, &quot;!=&quot;, false]]}"/>
+                                    <button name="335" string="Print Badge" class="btn btn-link" type="action"
+                                            modifiers="{&quot;invisible&quot;: [[&quot;barcode&quot;, &quot;=&quot;, false]]}"/>
+                                </div>
+                            </group>
+                            <group string="Payroll" name="payroll_group">
+                                <field name="job_id" on_change="1" can_create="true" can_write="true"/>
+                            </group>
+                            <group name="application_group" string="Application Settings"
+                                   modifiers="{&quot;invisible&quot;: true}"/>
+                        </group>
+                    </page>
+                </notebook>
+
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" options="{'post_refresh': 'recipients'}"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </data>
+</odoo>

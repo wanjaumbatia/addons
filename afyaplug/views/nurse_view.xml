@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hr_employee_form_view_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="is_nurse"/>
+            </xpath>
+            <xpath expr="//field[@name='coach_id']" position="after">
+                <field name="nurse_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_hr_employee_search">
+        <field name="name">afyaplug.nurse.search</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name"/>
+                <field name="nurse_id"/>
+                <field name="nurse_license_number"/>
+                <field name="phone"/>
+            </search>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_hr_employee_tree">
+        <field name="name">afyaplug.nurse.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="nurse_id"/>
+                <field name="name"/>
+                <field name="nurse_license_number"/>
+                <field name="phone"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_afyaplug_nurse" model="ir.actions.act_window">
+        <field name="name">Nurses</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Nurse!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_nurse_root"
+              name="Nurses"
+              parent="menu_afyaplug_root"
+              sequence="10"/>
+
+    <menuitem id="menu_nurse"
+              name="Nurses List"
+              parent="menu_nurse_root"
+              action="action_afyaplug_nurse"
+              sequence="10"/>
+</odoo>

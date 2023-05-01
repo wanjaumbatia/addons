@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_gender_tree" model="ir.ui.view">
+        <field name="name">afyaplug.gender.tree</field>
+        <field name="model">afyaplug.gender</field>
+        <field name="arch" type="xml">
+            <tree string="Gender" sample="1">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gender_tree" model="ir.ui.view">
+        <field name="name">afyaplug.status.tree</field>
+        <field name="model">afyaplug.status</field>
+        <field name="arch" type="xml">
+            <tree string="Status" sample="1">
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gender_form" model="ir.ui.view">
+        <field name="name">afyaplug.gender.form</field>
+        <field name="model">afyaplug.gender</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_status_form" model="ir.ui.view">
+        <field name="name">afyaplug.status.form</field>
+        <field name="model">afyaplug.status</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="status" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="status"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_afyaplug_service" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afyaplug.service</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_afyaplug_status" model="ir.actions.act_window">
+        <field name="name">Status</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afyaplug.status</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first item!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_afyaplug_gender" model="ir.actions.act_window">
+        <field name="name">Gender</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afyaplug.gender</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first item!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_service_root"
+              name="Services"
+              parent="menu_afyaplug_root"
+              sequence="10"></menuitem>
+
+    <menuitem id="menu_service"
+              name="Services List"
+              parent="menu_service_root"
+              action="action_afyaplug_service"
+              sequence="10"/>
+
+    <!--    SETTING     -->
+    <menuitem id="menu_config_root"
+              name="Configuration"
+              parent="menu_afyaplug_root"
+              sequence="11"/>
+
+    <menuitem id="menu_status"
+              name="Status"
+              parent="menu_config_root"
+              action="action_afyaplug_status"
+              sequence="12"/>
+
+    <menuitem id="menu_gender"
+              name="Gender"
+              parent="menu_config_root"
+              action="action_afyaplug_gender"
+              sequence="13"/>
+
+
+</odoo>
