@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'license': 'LGPL-3',
+    'license': '',
     'name': "Web Window Title",
     'summary': "The custom web window title",
     'author': "renjie <i@renjie.me>",

@@ -46,20 +46,32 @@ class APIController(http.Controller):
 
     @validate_token
     @http.route(_routes, type="http", auth="none", methods=["GET"], csrf=False)
-    def get(self, model=None, id=None, **payload):
+    def get(self, model=None, id=None, **kw):
         try:
             ioc_name = model
             model = request.env[self._model].search([("model", "=", model)], limit=1)
             if model:
-                domain, fields, offset, limit, order = extract_arguments(**payload)
+                domain = []
+                fields = []
+                if kw.get('fields', ''):
+                    fields = kw.get('fields', '')
+                    fields.split(',')
+                else:
+                    fields = None
+                if kw.get('domain', ''):
+                    domain = kw.get('domain', '')
+                    domain = ast.literal_eval(domain)
+                limit = int(kw.get('limit', 0))
+                offset = int(kw.get('offset', 0))
+
                 data = request.env[model.model].search_read(
-                    domain=domain, fields=fields, offset=offset, limit=limit, order=order,
+                    domain=domain, fields=fields, offset=offset, limit=limit,
                 )
 
                 if id:
                     domain = [("id", "=", int(id))]
                     data = request.env[model.model].search_read(
-                        domain=domain, fields=fields, offset=offset, limit=limit, order=order,
+                        domain=domain, fields=fields, offset=offset, limit=limit,
                     )
                 if data:
                     return valid_response(data)

@@ -118,9 +118,7 @@
         </field>
     </record>
 
-    <menuitem id="menu_afyaplug_root"
-              name="Afya Plug Module" web_icon="afyaplug,static/description/icon.png"
-              sequence="9"/>
+
 
     <menuitem id="menu_config_root"
               name="Configuration"

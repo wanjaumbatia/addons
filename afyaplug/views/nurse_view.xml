@@ -9,8 +9,14 @@
             <xpath expr="//field[@name='work_email']" position="after">
                 <field name="is_nurse"/>
             </xpath>
+              <xpath expr="//field[@name='coach_id']" position="after">
+                <field name="nurse_license_number"/>
+            </xpath>
             <xpath expr="//field[@name='coach_id']" position="after">
                 <field name="nurse_id"/>
+            </xpath>
+            <xpath expr="//field[@name='nurse_id']" position="after">
+                <field name="product_id"/>
             </xpath>
         </field>
     </record>
@@ -24,6 +30,7 @@
                 <field name="nurse_id"/>
                 <field name="nurse_license_number"/>
                 <field name="phone"/>
+                <field name="cost"/>
             </search>
         </field>
     </record>
@@ -36,6 +43,7 @@
                 <field name="name"/>
                 <field name="nurse_license_number"/>
                 <field name="phone"/>
+                <field name="cost"/>
             </tree>
         </field>
     </record>
@@ -52,6 +60,10 @@
             </p>
         </field>
     </record>
+
+    <menuitem id="menu_afyaplug_root"
+              name="Afya Plug Module" web_icon="afyaplug,static/description/icon.png"
+              sequence="9"/>
 
     <menuitem id="menu_nurse_root"
               name="Nurses"

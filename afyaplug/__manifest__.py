@@ -6,7 +6,7 @@
     'author': "Francis Mbatia",
     'website': "https://www.afyaplug.com",
     'sequence': -100,
-    'version': '0.1',
+    'version': '1.0.0',
     'license': '',
     'depends': [
         'base',
@@ -20,9 +20,7 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'views/patient_view.xml',
         'views/nurse_view.xml',
-        'views/portal_template.xml',
         'views/templates.xml',
         'data/data.xml'
     ],
