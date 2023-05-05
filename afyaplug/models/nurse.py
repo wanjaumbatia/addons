@@ -19,6 +19,8 @@ class NurseView(models.Model):
     product_id = fields.Many2one('product.product', string='Service Offered')
     cost = fields.Float(compute="_get_price", string="Price")
     commission = fields.Float(compute="_get_price", string="Commision")
+    location = fields.Char(string='Location')
+    bio = fields.Char(string='Bio')
 
     @api.depends('product_id')
     def _get_price(self):

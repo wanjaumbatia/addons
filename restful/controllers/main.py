@@ -55,7 +55,7 @@ class APIController(http.Controller):
                 fields = []
                 if kw.get('fields', ''):
                     fields = kw.get('fields', '')
-                    fields.split(',')
+                    fields = fields.split(',')
                 else:
                     fields = None
                 if kw.get('domain', ''):
