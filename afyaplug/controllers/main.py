@@ -86,7 +86,9 @@ class MainController(http.Controller):
                                                                               limit=1).id])]
             }
         )
+
         # create access token
+        access_token = request.env["api.access_token"].find_one_or_create_token(user_id=user.id, create=True)
         return werkzeug.wrappers.Response(
             status=200,
             content_type="application/json; charset=utf-8",
@@ -94,7 +96,8 @@ class MainController(http.Controller):
             response=json.dumps(
                 {
                     "uid": user.id,
-                    "partner": partner.id
+                    "partner": partner.id,
+                    "access_token": access_token
                 }
             ),
         )
