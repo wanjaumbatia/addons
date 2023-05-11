@@ -8,6 +8,12 @@
             <xpath expr="//field[@name='work_email']" position="after">
                 <field name="is_nurse"/>
             </xpath>
+             <xpath expr="//field[@name='is_nurse']" position="after">
+                <field name="location"/>
+            </xpath>
+             <xpath expr="//field[@name='location']" position="after">
+                <field name="bio" widget="text" colspan="2"/>
+            </xpath>
               <xpath expr="//field[@name='coach_id']" position="after">
                 <field name="nurse_license_number"/>
             </xpath>
@@ -17,6 +23,7 @@
             <xpath expr="//field[@name='nurse_id']" position="after">
                 <field name="product_id"/>
             </xpath>
+
         </field>
     </record>
 

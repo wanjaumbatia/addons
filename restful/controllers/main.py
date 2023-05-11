@@ -35,7 +35,7 @@ def validate_token(func):
     return wrap
 
 
-_routes = ["/api/<model>", "/api/<model>/<id>", "/api/<model>/<id>/<action>"]
+_routes = ["/api/rest/<model>", "/api/rest/<model>/<id>", "/api/rest/<model>/<id>/<action>"]
 
 
 class APIController(http.Controller):
@@ -225,3 +225,4 @@ class APIController(http.Controller):
             return invalid_response("exception", e, 503)
         else:
             return valid_response(res)
+

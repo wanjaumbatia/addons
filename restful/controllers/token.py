@@ -14,32 +14,8 @@ _logger = logging.getLogger(__name__)
 class AccessToken(http.Controller):
     """."""
 
-    @http.route("/api/auth/token", methods=["GET"], type="http", auth="none", csrf=False)
+    @http.route("/api/auth/token", methods=["GET"], type="http", cors="*", auth="public", csrf=False)
     def token(self, **post):
-        """The token URL to be used for getting the access_token:
-
-        Args:
-            **post must contain login and password.
-        Returns:
-
-            returns https response code 404 if failed error message in the body in json format
-            and status code 202 if successful with the access_token.
-        Example:
-           import requests
-
-           headers = {'content-type': 'text/plain', 'charset':'utf-8'}
-
-           data = {
-               'login': 'admin',
-               'password': 'admin',
-               'db': 'galago.ng'
-            }
-           base_url = 'http://odoo.ng'
-           eq = requests.post(
-               '{}/api/auth/token'.format(base_url), data=data, headers=headers)
-           content = json.loads(req.content.decode('utf-8'))
-           headers.update(access-token=content.get('access_token'))
-        """
         _token = request.env["api.access_token"]
         params = ["db", "login", "password"]
         params = {key: post.get(key) for key in params if post.get(key)}
@@ -85,18 +61,15 @@ class AccessToken(http.Controller):
 
         # Generate tokens
         access_token = _token.find_one_or_create_token(user_id=uid, create=True)
-        # Successful response:
-        return werkzeug.wrappers.Response(
-            status=200,
-            content_type="application/json; charset=utf-8",
-            headers=[("Cache-Control", "no-store"), ("Pragma", "no-cache")],
-            response=json.dumps(
-                {
-                    "uid": uid,
-                    "access_token": access_token
-                }
-            ),
+        user_details = request.env['res.users'].sudo().search_read(
+            domain=[('id', '=', uid)],
+            fields=['display_name', 'country_id', 'email', 'function', 'lang']
         )
+        # Successful response:
+        return valid_response({
+            "user": user_details[0],
+            "access_token": access_token
+        })
 
     @http.route(["/api/auth/token"], methods=["DELETE"], type="http", auth="none", csrf=False)
     def delete(self, **post):
