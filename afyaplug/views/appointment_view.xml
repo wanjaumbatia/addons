@@ -61,6 +61,7 @@
                     <group>
                         <group>
                             <field name="contact_id"/>
+                            <field name="note" widget="text"/>
                         </group>
                         <group>
                             <field name="nurse_id"/>
