@@ -15,71 +15,36 @@ from pytz import timezone
 _logger = logging.getLogger(__name__)
 
 
-def validate_token(func):
-
-    @functools.wraps(func)
-    def wrap(self, *args, **kwargs):
-        """."""
-        access_token = request.httprequest.headers.get("access_token")
-        print(access_token)
-        if not access_token:
-            return invalid_response("access_token_not_found", "missing access token in request header", 401)
-        access_token_data = (
-            request.env["api.access_token"].sudo().search([("token", "=", access_token)], order="id DESC", limit=1)
-        )
-
-        if access_token_data.find_one_or_create_token(user_id=access_token_data.user_id.id) != access_token:
-            return invalid_response("access_token", "token seems to have expired or invalid", 401)
-
-        request.session.uid = access_token_data.user_id.id
-        request.update_env(user=request.session.uid)
-        return func(self, *args, **kwargs)
-
-    return wrap
-
-def get_free_slots(events):
-        tz = timezone(http.request.env.context.get('tz') or 'UTC')
-        start_time = parser.parse(events[0].start).astimezone(tz).replace(minute=0, second=0, microsecond=0)
-        end_time = parser.parse(events[-1].stop).astimezone(tz).replace(minute=59, second=59, microsecond=999999)
-        free_slots = []
-
-        for event in events:
-            event_start = parser.parse(event.start).astimezone(tz)
-            event_end = parser.parse(event.stop).astimezone(tz)
-            if start_time < event_start:
-                free_slots.append((start_time, event_start))
-            start_time = event_end
-
-        if start_time < end_time:
-            free_slots.append((start_time, end_time))
-
-        return free_slots
-
 class MainController(http.Controller):
-    @http.route("/api/user", methods=["POST"], type="http", cors="*", auth="public", csrf=False)
-    def token(self, **post):
+
+    # CREATE CONTACT
+    @http.route("/api/create_contact", methods=["POST"], type="http", cors="*", auth="public", csrf=False)
+    def create_contact(self, **post):
         payload = request.httprequest.data.decode()
         payload = json.loads(payload)
-        user_check = request.env['res.users'].search_count([("login", "=", payload['email'])], limit=1)
 
-        if user_check > 0:
-            return invalid_response("UserExists", "User already exists")
+        contact_check = request.env['res.partner'].search_count([("email", "=", payload['email'])], limit=1)
 
-        user = request.env['res.users'].sudo().create({
-            'name': payload['name'],
-            'login': payload['email'],
-            'password': payload['password'],
-        })
+        if contact_check > 0:
+            return werkzeug.wrappers.Response(
+                status=400,
+                content_type="application/json; charset=utf-8",
+                headers=[("Cache-Control", "no-store"), ("Pragma", "no-cache")],
+                response=json.dumps(
+                    {
+                        "message": "Contact already exists"
+                    }
+                ),
+            )
 
-        partner = request.env['res.partner'].sudo().browse(user.partner_id.id)
-        partner.write(
+        partner = request.env['res.partner'].sudo().create(
             {
                 'name': payload['name'],
                 'company_type': 'person',
                 'country_id': request.env['res.country'].search([('code', '=', 'KE')], limit=1).id,
                 'email': payload['email'],
-                'phone': '555-555-1212',
-                'mobile': '555-555-1212',
+                'phone': payload['phone'],
+                'mobile': payload['phone'],
                 'function': 'Customer',
                 'comment': 'Customer Contact',
                 'category_id': [
@@ -88,23 +53,19 @@ class MainController(http.Controller):
             }
         )
 
-        # create access token
-        access_token = request.env["api.access_token"].find_one_or_create_token(user_id=user.id, create=True)
         return werkzeug.wrappers.Response(
             status=200,
             content_type="application/json; charset=utf-8",
             headers=[("Cache-Control", "no-store"), ("Pragma", "no-cache")],
             response=json.dumps(
                 {
-                    "uid": user.id,
-                    "partner": partner.id,
-                    "access_token": access_token
+                    "contact": partner.id
                 }
             ),
         )
 
-    @http.route("/api/nurses", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
-    def nurses(self, **kw):
+    @http.route("/api/personnel", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
+    def fetch_personnel(self, **kw):
         domain = []
         if kw.get('domain', ''):
             domain = kw.get('domain', '')
@@ -116,10 +77,21 @@ class MainController(http.Controller):
             fields = fields.split(',')
 
         data = request.env['hr.employee'].sudo().search_read(
-            domain=domain, fields=fields
+            domain=[('is_nurse', '=', True)], fields=fields
         )
         return valid_response(data)
 
+    @http.route("/api/categories", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
+    def fetch_categories(self, **kw):
+        data = request.env['afyaplug.category'].sudo().search_read(fields=['id','name','enabled'])
+        return valid_response(data)
+
+    @http.route("/api/services", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
+    def fetch_services(self, **kw):
+        data = request.env['product.template'].sudo().search_read(fields=[
+            'name', 'category_id', 'detailed_type', 'standard_price'
+        ])
+        return valid_response(data)
     @http.route("/api/nurses/<id>", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
     def getNurse(self, id=None, **kw):
         domain = [("id", "=", int(id))]
@@ -133,7 +105,6 @@ class MainController(http.Controller):
         )
         return valid_response(data[0])
 
-    @validate_token
     @http.route("/api/appointment", type="http", auth="public", methods=["POST"], csrf=False, cors="*")
     def book_appointment(self, **payload):
         payload = request.httprequest.data.decode()
@@ -181,7 +152,6 @@ class MainController(http.Controller):
 
         return valid_response(event.id)
 
-    @validate_token
     @http.route("/api/schedule/<id>", type="http", auth="public", methods=["POST"], csrf=False, cors="*")
     def nurses_schedule(self, id=None, **payload):
         nurse = request.env['hr.employee'].sudo().search([('id', '=', id)])

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="view_category_tree" model="ir.ui.view">
+        <field name="name">afyaplug.category.tree</field>
+        <field name="model">afyaplug.category</field>
+        <field name="arch" type="xml">
+            <tree multi_edit="1">
+                <field name="name"/>
+                <field name="enabled"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_category_form" model="ir.ui.view">
+        <field name="name">afyaplug.category.form</field>
+        <field name="model">afyaplug.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="enabled"/>
+                    </group>
+                    <notebook>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_appointment_search" model="ir.ui.view">
+        <field name="name">afyaplug.category.search</field>
+        <field name="model">afyaplug.category</field>
+        <field name="arch" type="xml">
+            <search string="Categories">
+                <field name="name"/>
+                <field name="enabled"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_afyaplug_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afyaplug.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first category !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_afyaplug_product_root"
+          name="Service Setup"
+          parent="menu_afyaplug_root"
+          sequence="20"/>
+
+    <menuitem id="menu_categories"
+              name="Categories"
+              parent="menu_afyaplug_product_root"
+              action="action_afyaplug_category"
+              sequence="1"/>
+</odoo>

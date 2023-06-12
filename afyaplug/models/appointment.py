@@ -53,7 +53,7 @@ class AfyaPlugAppointment(models.Model):
         })
 
         product = self.env['product.product'].browse(self.product_id.id)
-        print(product)
+        print(product.id)
         order_line = self.env['sale.order.line'].create({
             'order_id': order.id,
             'product_id': product.id,
